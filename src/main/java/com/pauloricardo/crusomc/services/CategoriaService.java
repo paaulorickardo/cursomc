@@ -3,10 +3,12 @@ package com.pauloricardo.crusomc.services;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.pauloricardo.crusomc.domain.Categoria;
 import com.pauloricardo.crusomc.repositories.CategoriaRepository;
+import com.pauloricardo.crusomc.services.exceptions.DataIntegrityException;
 import com.pauloricardo.crusomc.services.exceptions.ObjectNotFoundException;
 
 
@@ -32,5 +34,16 @@ public class CategoriaService {
 		find(obj.getId());
 		return repo.save(obj);
 	}
+	
+	public void delete(Integer id) {
+		find(id);
+		try {
+		repo.deleteById(id);
+		}
+		catch(DataIntegrityViolationException e) {
+			throw new DataIntegrityException("Não é possível excluir uma categoria que possua produtos!");
+			
+		}
+		}
 		
 }
